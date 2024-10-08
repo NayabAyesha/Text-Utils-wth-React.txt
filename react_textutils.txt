@@ -1,0 +1,455 @@
+textutils
+index.html
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="ILOGO.jpeg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <meta
+      name="description"
+      content="TextUtils is the website to manipulate your text in the way you want"
+    />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="apple-touch-icon" href="ILOGO.jpeg" />
+   
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+   
+    <title>Text Utils</title>
+  </head>
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
+   
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+     integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" 
+     crossorigin="anonymous"></script>
+  </body>
+</html>
+app.js
+import './App.css';
+import Navbar from './components/Navbar';
+import TextSide from './components/TextSide';
+import About from './components/About';
+import Alert from './components/Alert';
+import { useState } from 'react';
+import { Switch, Route } from "react-router-dom";
+
+
+function App() {
+
+  const [mode, setMode] = useState('light');
+
+  const [alert, setAlert] = useState(null);
+
+  const showAlert = (message, type) => { // Corrected arrow function syntax
+    setAlert({
+      msg: message, // Use colon (:) instead of equal sign (=)
+      type: type,    // Use colon (:) here too
+    });
+
+    setTimeout(() => {
+      setAlert(null); // Hide alert after a timeout
+    }, 3000); // 3 seconds
+  };
+ const RemoveBodyClasses =()=>
+ {
+  document.body.classList.remove('bg-light');
+  document.body.classList.remove('bg-dark');
+  document.body.classList.remove('bg-red');
+  document.body.classList.remove('bg-green');
+
+ }
+  const toggleMode = () => {
+    if (mode === 'light') {
+      RemoveBodyClasses();
+      setMode('dark');
+      document.body.style.backgroundColor="black";
+      document.body.style.color="white";
+      showAlert("Dark mode has been enabled", "warning"); // Call showAlert
+
+// setTimeout(() => {
+//   document.title="dark mode here";
+// }, 3000);
+// setTimeout(() => {
+//   document.title="dark install here";
+// }, 3000);
+
+    } else {
+      setMode('light');      RemoveBodyClasses();
+
+      document.body.style.backgroundColor="white";
+      document.body.style.color="black";
+      showAlert("Light mode has been enabled", "warning"); // Call showAlert
+
+
+    }
+  };
+
+  const toggleRedMode = () => {
+    if (mode === 'light') {
+      RemoveBodyClasses();
+      setMode('red');
+      document.body.style.backgroundColor="red";
+      document.body.style.color="black";
+      showAlert("Dark mode has been enabled", "danger"); // Call showAlert
+
+
+    } else {
+      setMode('light');
+      RemoveBodyClasses();
+
+      document.body.style.backgroundColor="white";
+      document.body.style.color="black";
+      showAlert("Red mode has been enabled", "danger"); // Call showAlert
+
+
+    }
+  };
+
+  const toggleGreenMode = () => {
+    if (mode === 'light') {
+      RemoveBodyClasses();
+
+      setMode('green');
+      document.body.style.backgroundColor="green";
+      document.body.style.color="yellow";
+      showAlert("Green mode has been enabled", "success"); // Call showAlert
+
+
+    } else {
+      setMode('light');
+      RemoveBodyClasses();
+
+      document.body.style.backgroundColor="white";
+      document.body.style.color="black";
+      showAlert("Light mode has been enabled", "success"); // Call showAlert
+
+
+    }
+  };
+
+  return (
+    <>
+      <Navbar title="TextUtils" mode={mode} toggleMode={toggleMode} toggleRedMode={toggleRedMode} toggleGreenMode={toggleGreenMode} about="About" />
+      <div className="container">
+      <Alert alert={alert}/>
+       
+        
+      </div>
+      <div className="container my-3">
+      <Switch>
+
+<Route exact path="/about">
+<About/>
+</Route> 
+<Route exact path="/">
+<TextSide showAlert={showAlert}  heading ="Enter The Text Here " mode={mode}/>
+
+</Route>
+</Switch>
+      </div>
+ 
+    </>
+  
+  );
+}
+
+export default App;
+components:
+index.js
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import './index.css'; // CSS file for styling
+import App from './App'; // Main App component
+import reportWebVitals from './reportWebVitals';
+import { BrowserRouter } from 'react-router-dom'; // Import BrowserRouter
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(
+  <React.StrictMode>
+    <BrowserRouter> {/* Wrap App with BrowserRouter for routing */}
+      <App />
+    </BrowserRouter>
+  </React.StrictMode>
+);
+
+// If you want to start measuring performance in your app, pass a function
+reportWebVitals();
+navbar.js
+import React from 'react';
+import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom'; // Corrected import
+
+export default function Navbar({ title = "Default Title", about = "About Us", mode, toggleMode, toggleRedMode, toggleGreenMode }) {
+  return (
+    <nav className={`navbar navbar-expand-lg navbar-${mode} bg-${mode}`}>
+      <div className="container-fluid">
+        <Link className="navbar-brand" to="/">{title}</Link>
+        <button className="navbar-toggler" type="button" data-bs-toggle="collapse" 
+          data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" 
+          aria-expanded="false" aria-label="Toggle navigation">
+          <span className="navbar-toggler-icon"></span>
+        </button>
+        <div className="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul className="navbar-nav me-auto mb-2 mb-lg-0">
+            <li className="nav-item">
+              <Link className="nav-link active" aria-current="page" to="/">Home</Link>
+            </li>
+            <li className="nav-item">
+              <Link className="nav-link active" aria-current="page" to="/about">{about}</Link> {/* Update the route if necessary */}
+            </li>
+            <li className="nav-item">
+              <Link className="nav-link active" aria-current="page" to="/">Services</Link>
+            </li>
+            <li className="nav-item">
+              <Link className="nav-link active" aria-current="page" to="/">Contacts</Link>
+            </li>
+          </ul>
+          <form className="d-flex">
+            <input className="form-control me-2" type="search" placeholder="Search" aria-label="Search" />
+            <button className="btn btn-outline-success" type="submit">Search</button>
+          </form>
+
+          <div className={`form-check form-switch ${mode}`}>
+            <input className="form-check-input" onClick={toggleMode} type="checkbox" id="flexSwitchCheckDefault"/>
+            <label className="form-check-label" htmlFor="flexSwitchCheckDefault">Enable Dark Mode</label>
+          </div>
+          <div className={`form-check form-switch ${mode}`}>
+            <input className="form-check-input" onClick={toggleRedMode} type="checkbox" id="flexSwitchCheckRed"/>
+            <label className="form-check-label" htmlFor="flexSwitchCheckRed">Enable Red Mode</label>
+          </div>
+          <div className={`form-check form-switch ${mode}`}>
+            <input className="form-check-input" onClick={toggleGreenMode} type="checkbox" id="flexSwitchCheckGreen"/>
+            <label className="form-check-label" htmlFor="flexSwitchCheckGreen">Enable Green Mode</label>
+          </div>
+        </div>
+      </div>
+    </nav>
+  );
+}
+
+Navbar.propTypes = {
+  title: PropTypes.string.isRequired,
+  about: PropTypes.string.isRequired,
+};
+textside.js
+
+import React, { useState } from 'react';
+
+export default function TextSide(props) {
+  const [text, setText] = useState(''); // Initial state without space
+
+  const handleUpperCase = () => {
+    let updatedText = text.toUpperCase();
+    setText(updatedText);
+  };
+
+  const handleLowerCase = () => {
+    let updatedText = text.toLowerCase();
+    setText(updatedText);
+  };
+
+  const handleBlankCase = () => {
+    setText(''); // Clear the text
+  };
+
+  const handleCopy = () => {
+    let textarea = document.getElementById("my-box1");
+    textarea.select();
+    navigator.clipboard.writeText(textarea.value); // Correctly copy the selected text
+  };
+
+  const handleSpace = () => {
+    let updatedText = text.trim().split(/\s+/); // Trim and then split by one or more spaces
+    setText(updatedText.join(" ")); // Join with a single space between words
+  };
+
+  const handleTextChange = (event) => {
+    setText(event.target.value); // Update text state as user types
+  };
+
+  return (
+    <>
+      <div className="mb-3">
+        <h1>{props.heading}</h1>
+        <label htmlFor="my-box1" className="form-label">Enter Text here</label>
+        <textarea
+          className="form-control"
+          value={text}
+          // style={{ backgroundColor: props.mode === 'dark' ? 'black' : 'white' }}
+          
+          onChange={handleTextChange}
+          id="my-box1"
+          rows="5"
+        ></textarea>
+        <button className="btn btn-success mt-2" onClick={handleUpperCase}>
+          Convert To Upper Case
+        </button>
+        <button className="btn btn-success mt-2 mx-5" onClick={handleLowerCase}>
+          Convert To Lower Case
+        </button>
+        <button className="btn btn-warning mt-2 mx-3" onClick={handleBlankCase}>
+          Clear All
+        </button>
+        <button className="btn btn-success mt-2 mx-3" onClick={handleCopy}>
+          Copy
+        </button>
+        <button className="btn btn-secondary mt-2 mx-3" onClick={handleSpace}>
+          Handle Space
+        </button>
+      </div>
+      <div className="container my-3">
+        <h2>Your Text Summary</h2>
+        <p>Characters: {text.length}</p>
+        <p>Words: {text.split(/\s+/).filter((word) => word.length > 0).length}</p>
+        <p>Minutes to read: {0.008 * text.split(/\s+/).filter((word) => word.length > 0).length}</p>
+        <h3>Preview</h3>
+        <p>{text}</p>
+      </div>
+    </>
+  );
+}
+about.js
+import React, { useState } from 'react';
+
+export default function About() {
+  const [myStyle, setmyStyle] = useState({
+    color: 'green',
+    backgroundColor: 'black',
+  });
+
+  const [btntext, setbtntext] = useState('Enable Dark Mode');
+
+  const togglemystyle = () => {
+    if (myStyle.color === 'green') {
+      setmyStyle({
+        color: 'white',
+        backgroundColor: 'black',
+      });
+      setbtntext('Enable Light Mode'); // Update the button text for Dark Mode
+    } else {
+      setmyStyle({
+        color: 'green',
+        backgroundColor: 'black',
+      });
+      setbtntext('Enable Dark Mode'); // Reset the button text for Light Mode
+    }
+  };
+
+  return (
+    <div className="container" style={myStyle}>
+      <h1 className="my-3">About Us</h1>
+      <div className="accordion" id="accordionExample">
+        <div className="accordion-item">
+          <h2 className="accordion-header" id="headingOne">
+            <button
+              className="accordion-button"
+              style={myStyle}
+              type="button"
+              data-bs-toggle="collapse"
+              data-bs-target="#collapseOne"
+              aria-expanded="true"
+              aria-controls="collapseOne"
+            >
+              Accordion Item #1
+            </button>
+          </h2>
+          <div
+            id="collapseOne"
+            className="accordion-collapse collapse show"
+            aria-labelledby="headingOne"
+            data-bs-parent="#accordionExample"
+          >
+            <div className="accordion-body">
+              <strong>This is the first item's accordion body.</strong> It is
+              shown by default, until the collapse plugin adds the appropriate
+              classes that we use to style each element. These classes control
+              the overall appearance, as well as the showing and hiding via CSS
+              transitions.
+            </div>
+          </div>
+        </div>
+
+        <div className="accordion-item">
+          <h2 className="accordion-header" id="headingTwo">
+            <button
+              className="accordion-button collapsed"
+              style={myStyle}
+              type="button"
+              data-bs-toggle="collapse"
+              data-bs-target="#collapseTwo"
+              aria-expanded="false"
+              aria-controls="collapseTwo"
+            >
+              Accordion Item #2
+            </button>
+          </h2>
+          <div
+            id="collapseTwo"
+            className="accordion-collapse collapse"
+            aria-labelledby="headingTwo"
+            data-bs-parent="#accordionExample"
+          >
+            <div className="accordion-body">
+              <strong>This is the second item's accordion body.</strong> It is
+              hidden by default, until the collapse plugin adds the appropriate
+              classes that we use to style each element.
+            </div>
+          </div>
+        </div>
+
+        <div className="accordion-item">
+          <h2 className="accordion-header" id="headingThree">
+            <button
+              className="accordion-button collapsed"
+              style={myStyle}
+              type="button"
+              data-bs-toggle="collapse"
+              data-bs-target="#collapseThree"
+              aria-expanded="false"
+              aria-controls="collapseThree"
+            >
+              Accordion Item #3
+            </button>
+          </h2>
+          <div
+            id="collapseThree"
+            className="accordion-collapse collapse"
+            aria-labelledby="headingThree"
+            data-bs-parent="#accordionExample"
+          >
+            <div className="accordion-body">
+              <strong>This is the third item's accordion body.</strong> It is
+              hidden by default, until the collapse plugin adds the appropriate
+              classes.
+            </div>
+          </div>
+        </div>
+      </div>
+      <button type="button" onClick={togglemystyle} className="btn btn-success my-3">
+        {btntext}
+      </button>
+    </div>
+  );
+}
+alert.js
+import React from 'react';
+
+export default function Alert(props) {
+  return (
+    props.alert && (
+      <div className={`alert alert-${props.alert.type}`} role="alert">
+        <strong>{props.alert.type}</strong>: {props.alert.msg}
+        <button
+          type='button'
+          className='btn-close'
+          data-bs-dismiss='alert'
+          aria-label='Close'
+        ></button>
+      </div>
+    )
+  );
+}
